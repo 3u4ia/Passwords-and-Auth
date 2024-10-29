@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class Register extends AbsLogReg {
 
@@ -31,24 +32,37 @@ public class Register extends AbsLogReg {
     }
 
 
-    void hashText(){
+    public String passHasher(){
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            byte[] pass = password.getBytes(StandardCharsets.UTF_8);
+            byte[] digest =  messageDigest.digest(pass);
 
+             return Base64.getEncoder().encodeToString(digest);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
+
     @Override
     void hashedText(){
         if(checkIfValidUsername()){
 
-            try {
-                MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                byte[] pass = password.getBytes(StandardCharsets.UTF_8);
-                byte[] digest = messageDigest.digest(pass);
-                // Then do the file opening and writing.
+            String base64Hash = passHasher();
 
-            } catch (NoSuchAlgorithmException e) {
+            String entry = "Username: " + username + "\nPassword: " + base64Hash;
+            byte[] entryBytes = entry.getBytes();
+
+            try (FileOutputStream fos = new FileOutputStream("hashedText.txt")){
+                fos.write(entryBytes);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
-
+        } else {
+            System.out.println("Unable to register as there's an invalid entry");
         }
     }
 

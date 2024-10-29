@@ -1,3 +1,5 @@
-./.idea
-./.plainText.txt
-./.out
+.idea
+out
+./plainText.txt
+./hashedText.txt
+./saltedAndHashedText.txt
