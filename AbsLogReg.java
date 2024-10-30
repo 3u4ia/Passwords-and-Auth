@@ -1,6 +1,7 @@
 public abstract class AbsLogReg {
     String username;
     String password;
+    boolean canContinue = true;
 
     abstract void plainText();
     abstract void hashedText();

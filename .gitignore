@@ -1,5 +1,6 @@
 .idea
 out
-./plainText.txt
-./hashedText.txt
-./saltedAndHashedText.txt
+plainText.txt
+hashedText.txt
+saltedAndHashedText.txt
+

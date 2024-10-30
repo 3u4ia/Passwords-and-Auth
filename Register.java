@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Register extends AbsLogReg {
@@ -14,16 +15,29 @@ public class Register extends AbsLogReg {
         super(username, password); // instantiates username and password in abs class
     }
 
+    void run() {
+        plainText();
+        if(!canContinue) {
+            return;
+        }
+        hashedText();
+        if(!canContinue){
+            return;
+        }
+        saltedHashText();
+    }
+
     @Override
     void plainText() {
         if(checkIfValidUsername()){
-            String entry = "Username: " + username + "\nPassword: " + password;
+            String entry = "Username: " + username + "\nPassword: " + password + "\nSalt: 0";
             byte[] entryBytes = entry.getBytes();
 
             try (FileOutputStream fos = new FileOutputStream("plainText.txt")){
                 fos.write(entryBytes);
             } catch (IOException e) {
                 e.printStackTrace();
+                canContinue = false;
             }
         }
         else{
@@ -48,28 +62,73 @@ public class Register extends AbsLogReg {
 
     @Override
     void hashedText(){
-        if(checkIfValidUsername()){
+        if(checkIfValidUsername() && password.length() <= 10){
 
             String base64Hash = passHasher();
 
-            String entry = "Username: " + username + "\nPassword: " + base64Hash;
+            String entry = "Username: " + username + "\nPassword: " + base64Hash + "\nSalt: 0";
             byte[] entryBytes = entry.getBytes();
 
             try (FileOutputStream fos = new FileOutputStream("hashedText.txt")){
                 fos.write(entryBytes);
             } catch (IOException e) {
                 e.printStackTrace();
+                canContinue = false;
             }
 
         } else {
             System.out.println("Unable to register as there's an invalid entry");
+            canContinue = false;
         }
     }
 
+
+
+
+    byte[] saltToSaltedPassStr(byte[] byteSalt){
+        return (password + Base64.getEncoder().encodeToString(byteSalt)).getBytes();
+    }
+
+    public String saltPassHasher(byte[] byteSalt) throws NoSuchAlgorithmException {
+
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+        byte[] digest = messageDigest.digest(saltToSaltedPassStr(byteSalt));
+
+        return Base64.getEncoder().encodeToString(digest);
+
+    }
+
     @Override
-    void saltedHashText(){
+    void saltedHashText() {
+        byte[] salt = new byte[16];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+        if(checkIfValidUsername() && password.length() <= 10) {
+            try (FileOutputStream fos = new FileOutputStream("saltedAndHashed.txt")){
+                String passSaltHash = saltPassHasher(salt);
+
+                String entry = "Username: " + username + "\nPassword: " + passSaltHash + "\nSalt: " + Base64.getEncoder().encodeToString(salt);
+                fos.write(entry.getBytes());
+
+            } catch (IOException | NoSuchAlgorithmException e) {
+                e.printStackTrace();
+                canContinue = false;
+            }
+        } else {
+            System.out.println("Could not register as there are invalid entries");
+            canContinue = false;
+        }
+
+
 
     }
 
 
 }
+
+
+
+
+
+
