@@ -31,7 +31,7 @@ public class Register extends AbsLogReg {
     void plainText() {
         if(checkIfValidUsername()){
             String entry = "Username: " + username + "\nPassword: " + password + "\nSalt: 0";
-            byte[] entryBytes = entry.getBytes();
+            byte[] entryBytes = entry.getBytes(StandardCharsets.UTF_8);
 
             try (FileOutputStream fos = new FileOutputStream("plainText.txt")){
                 fos.write(entryBytes);
@@ -62,12 +62,12 @@ public class Register extends AbsLogReg {
 
     @Override
     void hashedText(){
-        if(checkIfValidUsername() && password.length() <= 10){
+        if(checkIfValidUsername() && password.length() <= passLenAlwd){
 
             String base64Hash = passHasher();
 
             String entry = "Username: " + username + "\nPassword: " + base64Hash + "\nSalt: 0";
-            byte[] entryBytes = entry.getBytes();
+            byte[] entryBytes = entry.getBytes(StandardCharsets.UTF_8);
 
             try (FileOutputStream fos = new FileOutputStream("hashedText.txt")){
                 fos.write(entryBytes);
@@ -86,7 +86,7 @@ public class Register extends AbsLogReg {
 
 
     byte[] saltToSaltedPassStr(byte[] byteSalt){
-        return (password + Base64.getEncoder().encodeToString(byteSalt)).getBytes();
+        return (password + Base64.getEncoder().encodeToString(byteSalt)).getBytes(StandardCharsets.UTF_8);
     }
 
     public String saltPassHasher(byte[] byteSalt) throws NoSuchAlgorithmException {
@@ -104,12 +104,12 @@ public class Register extends AbsLogReg {
         byte[] salt = new byte[16];
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(salt);
-        if(checkIfValidUsername() && password.length() <= 10) {
-            try (FileOutputStream fos = new FileOutputStream("saltedAndHashed.txt")){
+        if(checkIfValidUsername() && password.length() <= passLenAlwd) {
+            try (FileOutputStream fos = new FileOutputStream("saltedAndHashedText.txt")){
                 String passSaltHash = saltPassHasher(salt);
 
                 String entry = "Username: " + username + "\nPassword: " + passSaltHash + "\nSalt: " + Base64.getEncoder().encodeToString(salt);
-                fos.write(entry.getBytes());
+                fos.write(entry.getBytes(StandardCharsets.UTF_8));
 
             } catch (IOException | NoSuchAlgorithmException e) {
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 public abstract class AbsLogReg {
     String username;
     String password;
+    int passLenAlwd = 10;
     boolean canContinue = true;
 
     abstract void plainText();
