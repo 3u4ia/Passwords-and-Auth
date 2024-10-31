@@ -15,17 +15,6 @@ public class Register extends AbsLogReg {
         super(username, password); // instantiates username and password in abs class
     }
 
-    void run() {
-        plainText();
-        if(!canContinue) {
-            return;
-        }
-        hashedText();
-        if(!canContinue){
-            return;
-        }
-        saltedHashText();
-    }
 
     @Override
     void plainText() {
@@ -56,6 +45,7 @@ public class Register extends AbsLogReg {
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            canContinue = false;
             return "";
         }
     }

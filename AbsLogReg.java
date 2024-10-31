@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public abstract class AbsLogReg {
     String username;
     String password;
@@ -7,6 +9,17 @@ public abstract class AbsLogReg {
     abstract void plainText();
     abstract void hashedText();
     abstract void saltedHashText();
+    void run(){
+        plainText();
+        if(!canContinue) {
+            return;
+        }
+        hashedText();
+        if(!canContinue){
+            return;
+        }
+        saltedHashText();
+    }
 
 
     AbsLogReg(String username, String password){
