@@ -32,8 +32,8 @@ public class Login extends AbsLogReg{
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 System.out.println("Error creating a scanner for the file");
+                System.out.println("You most likely did not register please try again and do so");
                 canContinue = false;
                 return;
             }
@@ -61,7 +61,6 @@ public class Login extends AbsLogReg{
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
             System.out.println("Message Digest Failed on login's hashedText()");
             canContinue = false;
             return "";
@@ -95,7 +94,6 @@ public class Login extends AbsLogReg{
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 System.out.println("Error with scanning the file");
                 canContinue = false;
                 return;
@@ -103,7 +101,6 @@ public class Login extends AbsLogReg{
 
 
             String hashPass = passHasher();
-            System.out.println("hashPass: " + hashPass);
 
             // Checks if the username nad password matches with the one in the database.
             if(username.equals(extrUsername) && hashPass.equals(extrPass)){
@@ -131,7 +128,7 @@ public class Login extends AbsLogReg{
 
         // Extracts the username, password and salt from the plain text file
         if(checkIfValidUsername() && password.length() <= passLenAlwd){
-            File file = new File("saltedAndHashed.txt");
+            File file = new File("saltedAndHashedText.txt");
             try(Scanner scanner = new Scanner(file)){
                 while(scanner.hasNextLine()){
                     // Checks line for certain keywords and extracts the provided info for them.
@@ -147,8 +144,7 @@ public class Login extends AbsLogReg{
                     }
                 }
             } catch (IOException e){
-                e.printStackTrace();
-                System.out.println("At the loginPlainText function");
+                System.out.println("Error thrown at the loginPlainText function");
                 canContinue = false;
                 return;
             }
@@ -166,7 +162,7 @@ public class Login extends AbsLogReg{
                 byte[] digest = messageDigest.digest(extrPassSaltBytes);
                 formattedUserPass = Base64.getEncoder().encodeToString(digest);
             } catch(NoSuchAlgorithmException e){
-                e.printStackTrace();
+                System.out.println("Error thrown at saltedHash Login MessageDigest");
                 canContinue = false;
                 return;
             }
@@ -174,7 +170,7 @@ public class Login extends AbsLogReg{
             // Compares the user inputted username with the username from the db
             // compares the formatted user inputted password with the password in the db.
             if(extractedUsername.equals(username) && extractedPassword.equals(formattedUserPass)){
-                System.out.println("You're logged in!");
+                System.out.println("You're logged in from saltedHashText()");
             } else {
                 System.out.println("You're not logged in on saltedHashedText.");
                 canContinue = false;

@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.stream.StreamSupport;
 
 public class Register extends AbsLogReg {
 
@@ -25,7 +26,7 @@ public class Register extends AbsLogReg {
             try (FileOutputStream fos = new FileOutputStream("plainText.txt")){
                 fos.write(entryBytes);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error opening a file output stream in plainText() registration");
                 canContinue = false;
             }
         }
@@ -44,7 +45,7 @@ public class Register extends AbsLogReg {
              return Base64.getEncoder().encodeToString(digest);
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            System.out.println("Error with the hashing algorithm on passHasher() registration");
             canContinue = false;
             return "";
         }
@@ -62,7 +63,7 @@ public class Register extends AbsLogReg {
             try (FileOutputStream fos = new FileOutputStream("hashedText.txt")){
                 fos.write(entryBytes);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error opening a file on hashedText.txt Register");
                 canContinue = false;
             }
 
@@ -102,7 +103,7 @@ public class Register extends AbsLogReg {
                 fos.write(entry.getBytes(StandardCharsets.UTF_8));
 
             } catch (IOException | NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                System.out.println("Error opening a file or Doing a hashing algorithm at saltedHashText() registration");
                 canContinue = false;
             }
         } else {
