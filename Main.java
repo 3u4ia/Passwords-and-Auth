@@ -1,3 +1,13 @@
+/**
+ * Author: Elroi Belete
+ * Date: 10/30/2024
+ * Last touched 10/30/2024
+ *
+ * This program uses different methods of storing passwords from plain text to
+ *      hashing to then hashing a passwords with a salt appended to it.
+ * This program then is also available to authenticate and see if they have an account.
+ */
+
 import java.util.Scanner;
 
 public class Main {
@@ -19,7 +29,7 @@ public class Main {
             System.out.println("--------------------------------------------");
             System.out.print("\nUsername: ");
             userName = scanObj.next();
-            System.out.print("\nPassword: ");
+            System.out.print("Password: ");
             password = scanObj.next();
             Login login = new Login(userName, password);
             login.run();
@@ -30,7 +40,7 @@ public class Main {
             System.out.println("---------------------------------------------");
             System.out.print("\nUsername: ");
             userName = scanObj.next();
-            System.out.print("\nPassword: ");
+            System.out.print("Password: ");
             password = scanObj.next();
 
             // Instantiation.

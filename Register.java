@@ -1,12 +1,10 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.stream.StreamSupport;
 
 public class Register extends AbsLogReg {
 
@@ -19,8 +17,8 @@ public class Register extends AbsLogReg {
 
     @Override
     void plainText() {
-        if(checkIfValidUsername()){
-            String entry = "Username: " + username + "\nPassword: " + password + "\nSalt: 0";
+        if(checkIfValidUsername() && checkIfValidPassword()){
+            String entry = username + "," + password;
             byte[] entryBytes = entry.getBytes(StandardCharsets.UTF_8);
 
             try (FileOutputStream fos = new FileOutputStream("plainText.txt")){
@@ -53,7 +51,7 @@ public class Register extends AbsLogReg {
 
     @Override
     void hashedText(){
-        if(checkIfValidUsername() && password.length() <= passLenAlwd){
+        if(checkIfValidUsername() && checkIfValidPassword()){
 
             String base64Hash = passHasher();
 
@@ -92,10 +90,10 @@ public class Register extends AbsLogReg {
 
     @Override
     void saltedHashText() {
-        byte[] salt = new byte[16];
+        byte[] salt = new byte[1];
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(salt);
-        if(checkIfValidUsername() && password.length() <= passLenAlwd) {
+        if(checkIfValidUsername() && checkIfValidPassword()) {
             try (FileOutputStream fos = new FileOutputStream("saltedAndHashedText.txt")){
                 String passSaltHash = saltPassHasher(salt);
 

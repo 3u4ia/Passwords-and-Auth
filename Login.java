@@ -1,9 +1,11 @@
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Scanner;
+
 
 public class Login extends AbsLogReg{
 
@@ -15,28 +17,26 @@ public class Login extends AbsLogReg{
 
     @Override
     void plainText(){
-        String extrUsername="";
+        String[] extrString;
+        String extrUsername;
         String extrPass="";
         String line;
-        if(checkIfValidUsername() && password.length() <= passLenAlwd){
+        if(checkIfValidUsername() && checkIfValidPassword()){
             File file = new File("plainText.txt");
 
             try(Scanner scanner = new Scanner(file)){
-                while(scanner.hasNextLine()) {
-                    line = scanner.nextLine();
-                    if (line.startsWith("Username: ")) {
-                        extrUsername = line.substring("Username:".length()).trim();
-                    }
-                    if (line.startsWith("Password: ")) {
-                        extrPass = line.substring("Password:".length()).trim();
-                    }
-                }
+                line = scanner.nextLine();
+                extrString = line.split(",");
+
             } catch (IOException e) {
                 System.out.println("Error creating a scanner for the file");
                 System.out.println("You most likely did not register please try again and do so");
                 canContinue = false;
                 return;
             }
+
+            extrUsername = extrString[0];
+            extrPass = extrString[1];
         } else {
             System.out.println("Invalid Input");
             canContinue = false;
@@ -74,7 +74,7 @@ public class Login extends AbsLogReg{
 
     @Override
     void hashedText() {
-        if (checkIfValidUsername() && password.length() <= passLenAlwd) {
+        if (checkIfValidUsername() && checkIfValidPassword()) {
             String extrUsername = "";
             String extrPass = "";
 
@@ -88,8 +88,7 @@ public class Login extends AbsLogReg{
                     line = scanner.nextLine();
                     if (line.startsWith("Username: ")) {
                         extrUsername = line.substring("Username:".length()).trim();
-                    }
-                    if (line.startsWith("Password: ")) {
+                    } else if (line.startsWith("Password: ")) {
                         extrPass = line.substring("Password:".length()).trim();
                     }
                 }
@@ -107,7 +106,6 @@ public class Login extends AbsLogReg{
                 System.out.println("You're logged in from the hashPass");
             } else {
                 System.out.println("You have been denied from login hashedText()");
-                canContinue = false;
             }
 
 
@@ -127,7 +125,7 @@ public class Login extends AbsLogReg{
 
 
         // Extracts the username, password and salt from the plain text file
-        if(checkIfValidUsername() && password.length() <= passLenAlwd){
+        if(checkIfValidUsername() && checkIfValidPassword()){
             File file = new File("saltedAndHashedText.txt");
             try(Scanner scanner = new Scanner(file)){
                 while(scanner.hasNextLine()){
@@ -135,11 +133,9 @@ public class Login extends AbsLogReg{
                     line = scanner.nextLine();
                     if(line.startsWith("Username: ")){
                         extractedUsername = line.substring("Username:".length()).trim();
-                    }
-                    if(line.startsWith("Password: ")) {
+                    } else if(line.startsWith("Password: ")) {
                         extractedPassword = line.substring("Password:".length()).trim();
-                    }
-                    if(line.startsWith("Salt: ")){
+                    } else if(line.startsWith("Salt: ")){
                         extractedSalt = line.substring("Salt: ".length()).trim();
                     }
                 }
@@ -172,8 +168,7 @@ public class Login extends AbsLogReg{
             if(extractedUsername.equals(username) && extractedPassword.equals(formattedUserPass)){
                 System.out.println("You're logged in from saltedHashText()");
             } else {
-                System.out.println("You're not logged in on saltedHashedText.");
-                canContinue = false;
+                System.out.println("You're been denied from saltedHashedText.");
             }
 
 

@@ -51,6 +51,28 @@ public abstract class AbsLogReg {
         return true;
     }
 
+    boolean checkIfValidPassword() {
+        char tempChar;
+        if(password.length() > passLenAlwd){
+            System.out.println("Your password is too long");
+            return false;
+        }
+
+        for(int i = 0; i < password.length(); i++){
+            tempChar = password.charAt(i);
+
+            if(Character.isUpperCase(tempChar)){
+                System.out.println("Make sure their are no capitals in your password");
+                return false;
+            }
+            if(Character.isDigit(tempChar)) {
+                System.out.println("Make sure there aren't any numbers in your password");
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
 }
